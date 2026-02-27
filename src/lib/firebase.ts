@@ -18,6 +18,7 @@ export const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 
 const getRNPersistence = () =>{
     try {
+        //
         const rn = require("firebase/auth/react-native")
         return rn.getReactNativePersistence;
     } catch {
