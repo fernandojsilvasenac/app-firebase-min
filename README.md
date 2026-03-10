@@ -29,5 +29,5 @@ Aí o catch devolve getAuth(app) -> pega a instância já existente e segue a vi
 
 Bloco3
 Pega o serviço Firestore daquele app (daquele projeto Firebase)
-É rápido basicamente "cria o cliente" para você usar o collection, addDoc, etc.
+É rápido basicamente "cria o cliente" para você usar o collection, addDoc {json}, etc.
 db é o "módulo de banco de dados"

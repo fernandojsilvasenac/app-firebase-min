@@ -44,10 +44,59 @@ export default function App() {
       console.log("Register Ok uid: ", create.user.uid);
       Alert.alert("Conta criada com sucesso", create.user.email ?? "");
     } catch (error) {
-      console.log("Register failed", error);      
+      console.log("Register failed ", error);      
     }
   }
 
+  async function handleLogin() {
+    try {
+      console.log("Login --> ", email.trim());
+      const logged = await signInWithEmailAndPassword(auth, email.trim(), password);
+      console.log("LOGIN OK uid: ", logged.user.uid);
+      Alert.alert("Login Ok ", logged.user.email ?? "");
+    } catch (error) {
+      console.log("Login failed ", error);  
+    }
+  }
+
+  async function handleLogout(){
+    try {
+      console.log("LOGOUT !!!");
+      await signOut(auth);
+      console.log("LOGOUT OK");
+      Alert.alert("Logout Ok!");
+    } catch (error) {
+      console.log("Logout failed ", error)
+    }
+  }
+
+  async function AddNote(){
+    try {
+      console.log("ADD Note --> ", noteText);
+      const docRef = await addDoc(collection(db, "notes"), {
+        text: noteText,
+        createdAt: serverTimestamp(),
+        user: userEmail ?? null,
+      })
+      console.log("ADD NOTE OK id: ", docRef.id);
+      setNoteText("")
+      await refreshNotes();
+    } catch (error) {
+      console.log("addNote failed ", error);
+    }
+  }
+
+  async function refreshNotes(){
+    try {
+      console.log("REFRESH NOTES !!!");
+      const response = query(collection(db,"notes"), orderBy("createdAt", "desc"), limit(10));
+      const snap = await getDocs(response);
+      console.log("NOTES count: ", snap.size);
+      setNotes(snap.docs.map(n => ({id: n.id, text:String(n.data().text ?? "") })));
+    } catch (error) {
+      console.log("refreshNotes failed ", error)      
+    }
+  }
   return (
     <KeyboardAvoidingView
     style={{ flex:1, marginTop:25}}
@@ -81,10 +130,12 @@ export default function App() {
             style={{padding:10, borderWidth:1, borderRadius:10 }}>
               <Text>Criar conta</Text>
             </Pressable>
-            <Pressable style={{padding:10, borderWidth:1, borderRadius:10 }}>
+            <Pressable onPress={handleLogin}
+            style={{padding:10, borderWidth:1, borderRadius:10 }}>
               <Text>Login</Text>
             </Pressable>
-            <Pressable style={{padding:10, borderWidth:1, borderRadius:10 }}>
+            <Pressable  onPress={handleLogout}
+            style={{padding:10, borderWidth:1, borderRadius:10 }}>
               <Text>Logout</Text>
             </Pressable>
           </View>
@@ -100,9 +151,11 @@ export default function App() {
             style={{borderWidth:1, borderRadius:10, padding:10}}
           ></TextInput>
           <View style={{flexDirection:"row", gap:10, flexWrap:"wrap"}}>
-            <Pressable style={{padding:10, borderWidth:1, borderRadius:10 }}
+            <Pressable onPress={AddNote}
+            style={{padding:10, borderWidth:1, borderRadius:10 }}
             ><Text>Salvar nota</Text></Pressable>
-            <Pressable style={{padding:10, borderWidth:1, borderRadius:10 }}
+            <Pressable onPress={refreshNotes}
+            style={{padding:10, borderWidth:1, borderRadius:10 }}
             ><Text>Recarregar</Text></Pressable>
           </View>
           <View>

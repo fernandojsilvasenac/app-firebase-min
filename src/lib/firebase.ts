@@ -13,7 +13,7 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 console.log("FIREBASE CONFIG ",firebaseConfig);
-
+//bloco1
 export const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 
 const getRNPersistence = () =>{
@@ -27,7 +27,7 @@ const getRNPersistence = () =>{
         return auth.getReactNativePersistence;
     }
 }
-             
+//bloco2             
 export const auth = ( () =>{
     try {
         const getReactNativePersistence = getRNPersistence()
@@ -38,6 +38,7 @@ export const auth = ( () =>{
         return getAuth(app)
     }
 })();
+//bloco3
 export const db = getFirestore(app);
 
 
